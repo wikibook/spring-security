@@ -39,7 +39,6 @@ class MainTests {
     @Test
     @DisplayName("When calling the /ciao endpoint without a user, " +
             "the application should return HTTP 200 OK.")
-    @WithMockUser
     void testCallCiaoWithoutUser() {
         client.get()
                 .uri("/ciao")
