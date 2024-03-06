@@ -1,15 +1,12 @@
 package com.laurentiuspilca.ssia;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -21,19 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureWireMock(port = 0)
 public class MainTests {
 
     @Autowired
     private MockMvc mvc;
-
-    private static WireMockServer wireMockServer;
-
-    @BeforeAll
-    static void init() {
-        wireMockServer = new WireMockServer(new WireMockConfiguration().port(8080));
-        wireMockServer.start();
-        WireMock.configureFor("localhost", 8080);
-    }
 
     @Test
     @DisplayName("Test access_token is obtained using valid client credentials")
@@ -51,10 +40,5 @@ public class MainTests {
                     .header("Authorization", "Bearer " + token))
            .andExpect(status().isOk());
 
-    }
-
-    @AfterAll
-    static void tearDown() {
-        wireMockServer.stop();
     }
 }
